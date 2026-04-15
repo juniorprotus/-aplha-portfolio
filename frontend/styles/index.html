@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wax Kandle Alpha | Dancehall & Reggae Vibes</title>
+    <meta name="description" content="Official platform for Dancehall and Reggae artist Wax Kandle Alpha. Watch the latest videos and listen to the newest tracks.">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <span class="logo-text">WAX KANDLE<span class="logo-accent">ALPHA</span></span>
+            </a>
+            <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#videos" class="nav-link">Videos</a></li>
+                <li><a href="#music" class="nav-link">Music</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">WAX KANDLE <span class="text-gold">ALPHA</span></h1>
+            <p class="hero-tagline">Dancehall & Reggae Vibes</p>
+            <a href="#videos" class="btn btn-primary">Watch Latest</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-image-container">
+                    <!-- Unsplash high quality placeholder for reggae/dancehall artist imagery -->
+                    <img src="https://images.unsplash.com/photo-1493225457124-a1a2a5f5f4b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wax Kandle Alpha on stage" class="about-img">
+                </div>
+                <div class="about-text">
+                    <h2 class="section-title">The <span class="text-green">Journey</span></h2>
+                    <p>Wax Kandle Alpha represents the raw, unfiltered energy of modern Dancehall blended with the conscious roots of Reggae. Emerging from the underground scene, Wax Kandle brings a unique sound that resonates with the soul.</p>
+                    <p>With a string of underground hits and a commanding stage presence, the journey is just beginning. Experience the vibe, feel the rhythm, and join the movement.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Videos Section -->
+    <section id="videos" class="videos">
+        <div class="container">
+            <h2 class="section-title text-center">Latest <span class="text-green">Videos</span></h2>
+            <div id="video-grid-container" class="video-grid">
+                <!-- Videos will be injected here by JS -->
+            </div>
+            <div class="text-center mt-4">
+                <a href="https://www.youtube.com/@WaxKandleAlpha/shorts" target="_blank" rel="noopener noreferrer" class="btn btn-outline">More on YouTube</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>WAX KANDLE ALPHA</h3>
+                    <p>Bringing the best of Dancehall & Reggae.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://www.youtube.com/@WaxKandleAlpha" target="_blank" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                    </a>
+                    <a href="#" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Wax Kandle Alpha. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
