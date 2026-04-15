@@ -4,12 +4,84 @@
  * Accepts external data via constructor for backend-ready architecture.
  */
 
+
 export class MusicSection {
     constructor(containerId, songs = []) {
         this.container = document.getElementById(containerId);
         this.songs = songs;
         this.activeFilter = 'all';
         this.currentlyPlaying = null;
+        this.player = null;
+        this.isApiReady = false;
+        
+        this.initYouTubeApi();
+    }
+
+    /**
+     * Initializes the YouTube IFrame Player API.
+     */
+    initYouTubeApi() {
+        if (window.YT && window.YT.Player) {
+            this.isApiReady = true;
+            return;
+        }
+
+        // Add API script if not already present
+        if (!document.getElementById('youtube-api-script')) {
+            const tag = document.createElement('script');
+            tag.id = 'youtube-api-script';
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+
+        // Global callback for YT API
+        window.onYouTubeIframeAPIReady = () => {
+            this.isApiReady = true;
+            // Notify components if needed, or just rely on checks before play
+        };
+    }
+
+    /**
+     * Creates or gets the hidden player container.
+     */
+    ensurePlayer(youtubeId) {
+        let playerContainer = document.getElementById('music-player-hidden');
+        if (!playerContainer) {
+            playerContainer = document.createElement('div');
+            playerContainer.id = 'music-player-hidden';
+            playerContainer.style.display = 'none';
+            document.body.appendChild(playerContainer);
+        }
+
+        if (this.player && this.player.getIframe()) {
+            this.player.loadVideoById(youtubeId);
+            return;
+        }
+
+        this.player = new YT.Player('music-player-hidden', {
+            height: '0',
+            width: '0',
+            videoId: youtubeId,
+            playerVars: {
+                'autoplay': 1,
+                'controls': 0,
+                'disablekb': 1,
+                'fs': 0,
+                'rel': 0,
+                'modestbranding': 1
+            },
+            events: {
+                'onReady': (event) => {
+                    event.target.playVideo();
+                },
+                'onStateChange': (event) => {
+                    if (event.data === YT.PlayerState.ENDED) {
+                        this.stopAllPlaybackUI();
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -41,15 +113,23 @@ export class MusicSection {
      * @returns {string} HTML string for the song card.
      */
     createSongCard(song) {
+        const isCurrent = this.currentlyPlaying === song.id;
         return `
-            <div class="song-card" data-song-id="${song.id}" data-category="${song.category}" id="song-${song.id}">
+            <div class="song-card ${isCurrent ? 'is-playing' : ''}" data-song-id="${song.id}" data-category="${song.category}" id="song-${song.id}">
                 <div class="song-thumbnail">
                     <img src="${song.thumbnail}" alt="${song.title}" loading="lazy">
                     <div class="song-overlay">
                         <button class="play-btn" aria-label="Play ${song.title}" data-song-id="${song.id}">
-                            <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
-                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                            </svg>
+                            ${isCurrent ? `
+                                <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                                    <rect x="6" y="4" width="4" height="16"></rect>
+                                    <rect x="14" y="4" width="4" height="16"></rect>
+                                </svg>
+                            ` : `
+                                <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            `}
                         </button>
                     </div>
                 </div>
@@ -89,7 +169,7 @@ export class MusicSection {
             });
         }
 
-        // Play button clicks (UI only — no actual playback)
+        // Play button clicks
         const songGrid = document.getElementById('song-grid');
         if (songGrid) {
             songGrid.addEventListener('click', (e) => {
@@ -103,34 +183,66 @@ export class MusicSection {
     }
 
     /**
-     * Toggles the visual playing state for a song card.
+     * Toggles the visual playing state and actual audio for a song card.
      * @param {string} songId - The song ID to toggle.
      */
     togglePlay(songId) {
+        const song = this.songs.find(s => s.id === songId);
+        if (!song) return;
+
+        if (this.currentlyPlaying === songId) {
+            // Already playing this song, so pause
+            this.pausePlayback();
+        } else {
+            // Playing a new song
+            this.startPlayback(song);
+        }
+    }
+
+    startPlayback(song) {
+        this.currentlyPlaying = song.id;
+        this.updateUI();
+
+        if (this.isApiReady) {
+            this.ensurePlayer(song.youtubeId);
+            if (this.player && this.player.playVideo) {
+                this.player.playVideo();
+            }
+        } else {
+            console.warn('YouTube API not ready yet.');
+        }
+    }
+
+    pausePlayback() {
+        this.currentlyPlaying = null;
+        this.updateUI();
+
+        if (this.player && this.player.pauseVideo) {
+            this.player.pauseVideo();
+        }
+    }
+
+    stopAllPlaybackUI() {
+        this.currentlyPlaying = null;
+        this.updateUI();
+    }
+
+    updateUI() {
         const allCards = this.container.querySelectorAll('.song-card');
-
         allCards.forEach(card => {
-            if (card.dataset.songId === songId) {
-                const isPlaying = card.classList.toggle('is-playing');
-                this.currentlyPlaying = isPlaying ? songId : null;
-
-                // Update play button icon
-                const btn = card.querySelector('.play-btn');
-                if (isPlaying) {
-                    btn.innerHTML = `
-                        <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
-                            <rect x="6" y="4" width="4" height="16"></rect>
-                            <rect x="14" y="4" width="4" height="16"></rect>
-                        </svg>`;
-                } else {
-                    btn.innerHTML = `
-                        <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>`;
-                }
+            const sid = card.dataset.songId;
+            const isPlaying = sid === this.currentlyPlaying;
+            
+            card.classList.toggle('is-playing', isPlaying);
+            
+            const btn = card.querySelector('.play-btn');
+            if (isPlaying) {
+                btn.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>`;
             } else {
-                card.classList.remove('is-playing');
-                const btn = card.querySelector('.play-btn');
                 btn.innerHTML = `
                     <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -158,3 +270,4 @@ export class MusicSection {
         this.bindEvents();
     }
 }
+

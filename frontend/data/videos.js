@@ -51,5 +51,13 @@ export const videos = [
         category: 'music-video',
         isShort: false,
         date: '2023-10-15'
+    },
+    {
+        id: 'v7',
+        embedUrl: 'https://www.youtube.com/embed/lEa7BcT3Yqo',
+        title: 'Freestyle on @Raptures song',
+        category: 'freestyle',
+        isShort: false,
+        date: '2023-09-20'
     }
 ];

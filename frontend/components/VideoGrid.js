@@ -8,6 +8,30 @@ export class VideoGrid {
     constructor(containerId, videos = []) {
         this.container = document.getElementById(containerId);
         this.videos = videos;
+        this.activeFilter = 'all';
+    }
+
+    /**
+     * Creates the HTML for the filter tabs.
+     * @returns {string} HTML string for the filter bar.
+     */
+    createFilterTabs() {
+        const categories = [
+            { key: 'all', label: 'All Releases' },
+            { key: 'music-video', label: 'Music Videos' },
+            { key: 'freestyle', label: 'Freestyles' },
+            { key: 'live', label: 'Live' }
+        ];
+
+        const tabs = categories.map(cat => `
+            <button
+                class="video-tab ${cat.key === this.activeFilter ? 'active' : ''}"
+                data-filter="${cat.key}">
+                ${cat.label}
+            </button>
+        `).join('');
+
+        return `<div class="video-tabs" id="video-tabs">${tabs}</div>`;
     }
 
     /**
@@ -45,16 +69,48 @@ export class VideoGrid {
      */
     formatCategory(category) {
         const labels = {
-            'music-video': 'Music Video',
-            'live': 'Live Performance',
-            'behind-the-scenes': 'Behind the Scenes',
+            'music-video': 'MV',
+            'live': 'Live',
+            'behind-the-scenes': 'BTS',
             'freestyle': 'Freestyle'
         };
         return labels[category] || category;
     }
 
+    bindEvents() {
+        const tabContainer = document.getElementById('video-tabs');
+        if (tabContainer) {
+            tabContainer.addEventListener('click', (e) => {
+                const tab = e.target.closest('.video-tab');
+                if (!tab) return;
+
+                this.activeFilter = tab.dataset.filter;
+                this.render();
+            });
+        }
+    }
+
+    getFilteredVideos() {
+        if (this.activeFilter === 'all') return this.videos;
+        return this.videos.filter(v => v.category === this.activeFilter);
+    }
+
     render() {
         if (!this.container) return;
-        this.container.innerHTML = this.videos.map(v => this.createVideoCard(v)).join('');
+        
+        const filtered = this.getFilteredVideos();
+        const videosHtml = filtered.length > 0
+            ? filtered.map(v => this.createVideoCard(v)).join('')
+            : '<p class="no-results">No videos found in this category.</p>';
+
+        this.container.innerHTML = `
+            ${this.createFilterTabs()}
+            <div class="video-grid-inner">
+                ${videosHtml}
+            </div>
+        `;
+
+        this.bindEvents();
     }
 }
+

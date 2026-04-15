@@ -329,6 +329,48 @@
 }
 
 .video-grid {
+    display: block; /* Containers tabs and inner grid */
+}
+
+/* ── Video Tabs (Similar to Music Tabs) ────────────────────── */
+.video-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.video-tab {
+    padding: 0.5rem 1.4rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 30px;
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.video-tab:hover {
+    border-color: var(--color-accent-green);
+    color: var(--color-accent-green);
+    background: rgba(46, 204, 113, 0.08);
+}
+
+.video-tab.active {
+    background: linear-gradient(135deg, var(--color-accent-green), #0d8a52);
+    color: #fff;
+    border-color: transparent;
+    font-weight: 700;
+    box-shadow: 0 4px 15px var(--color-accent-green-glow);
+}
+
+.video-grid-inner {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-md);
@@ -717,7 +759,7 @@
 
 /* ── Tablet (768px) ───────────────────────────────────────── */
 @media (max-width: 1024px) {
-    .video-grid {
+    .video-grid-inner {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -768,7 +810,7 @@
         display: none;
     }
 
-    .video-grid {
+    .video-grid-inner {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--spacing-sm);
     }
