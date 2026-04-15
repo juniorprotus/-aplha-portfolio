@@ -27,8 +27,8 @@ The official channel features:
 This project is built using:
 - Frontend: HTML, CSS, JavaScript
 - Backend: Node.js 
-- Database: (e.g. Supabase / MongoDB – update based on your project)
-- Hosting: (e.g. Render / Netlify / Vercel)
+- Database: Supabase 
+- Hosting:  Vercel
 
 ## 📁 Features
 
