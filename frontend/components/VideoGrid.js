@@ -1,60 +1,60 @@
 /**
  * VideoGrid Component
- * Handles the rendering of embedded YouTube videos for the platform phase 1 MVP.
+ * Renders a responsive grid of embedded YouTube video cards.
+ * Accepts external data via constructor for backend-ready architecture.
  */
 
 export class VideoGrid {
-    constructor(containerId) {
+    constructor(containerId, videos = []) {
         this.container = document.getElementById(containerId);
-        
-        // Hardcoded latest videos for MVP phase 1
-        // In Phase 2/3, this will be fetched via API and rendered dynamically
-        this.videos = [
-            {
-                id: '1',
-                embedUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ', // Placeholder until actual channel embeds are confirmed
-                title: 'Official Music Video',
-                isShort: false
-            },
-            {
-                id: '2',
-                embedUrl: 'https://www.youtube.com/embed/JGwWNGJdvx8', 
-                title: 'Live Session performance',
-                isShort: false
-            },
-            {
-                id: '3',
-                embedUrl: 'https://www.youtube.com/embed/y6120QOlsfU',
-                title: 'Studio Vibes',
-                isShort: false
-            }
-        ];
+        this.videos = videos;
+    }
+
+    /**
+     * Creates the HTML for a single video card.
+     * @param {Object} video - Video data object.
+     * @returns {string} HTML string for the video card.
+     */
+    createVideoCard(video) {
+        const aspectClass = video.isShort ? 'short-format' : '';
+        return `
+            <div class="video-card" data-video-id="${video.id}" data-category="${video.category}">
+                <div class="video-wrapper ${aspectClass}">
+                    <iframe
+                        src="${video.embedUrl}"
+                        title="${video.title}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                        loading="lazy">
+                    </iframe>
+                </div>
+                <div class="video-card-info">
+                    <h3 class="video-card-title">${video.title}</h3>
+                    <span class="video-card-category">${this.formatCategory(video.category)}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    /**
+     * Formats a category slug into a human-readable label.
+     * @param {string} category - Category slug.
+     * @returns {string} Formatted category name.
+     */
+    formatCategory(category) {
+        const labels = {
+            'music-video': 'Music Video',
+            'live': 'Live Performance',
+            'behind-the-scenes': 'Behind the Scenes',
+            'freestyle': 'Freestyle'
+        };
+        return labels[category] || category;
     }
 
     render() {
         if (!this.container) return;
-
-        let html = '';
-        
-        this.videos.forEach(video => {
-            const aspectClass = video.isShort ? 'short-format' : '';
-            html += `
-                <div class="video-card">
-                    <div class="video-wrapper ${aspectClass}">
-                        <iframe 
-                            src="${video.embedUrl}" 
-                            title="${video.title}"
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            allowfullscreen
-                            loading="lazy">
-                        </iframe>
-                    </div>
-                </div>
-            `;
-        });
-
-        this.container.innerHTML = html;
+        this.container.innerHTML = this.videos.map(v => this.createVideoCard(v)).join('');
     }
 }

@@ -1,11 +1,22 @@
+/**
+ * Main Application Entry Point
+ * Initializes all components and global behaviors.
+ */
+
 import { VideoGrid } from '../components/VideoGrid.js';
+import { MusicSection } from '../components/MusicSection.js';
+import { videos } from '../data/videos.js';
+import { songs } from '../data/songs.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Video Grid Component
-    const videoGrid = new VideoGrid('video-grid-container');
+    // ─── Initialize Components ───────────────────────────────────
+    const videoGrid = new VideoGrid('video-grid-container', videos);
     videoGrid.render();
 
-    // 2. Mobile Navigation Toggle
+    const musicSection = new MusicSection('music-section-container', songs);
+    musicSection.render();
+
+    // ─── Mobile Navigation Toggle ────────────────────────────────
     const mobileToggle = document.getElementById('mobile-toggle');
     const navLinks = document.getElementById('nav-links');
 
@@ -24,30 +35,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Navbar scroll effect
+    // ─── Navbar Scroll Effect ────────────────────────────────────
     const navbar = document.getElementById('navbar');
-    
+
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
-        
-        // 4. Update active nav link based on scroll position
+
         updateActiveNavLink();
     });
 
-    // Handle Active Nav Link Logic
+    // ─── Active Nav Link Tracking ────────────────────────────────
     const sections = document.querySelectorAll('section');
     const navItems = document.querySelectorAll('.nav-link');
 
     function updateActiveNavLink() {
         let current = '';
-        
+
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
             if (scrollY >= (sectionTop - 150)) {
                 current = section.getAttribute('id');
             }
@@ -61,24 +70,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Smooth scrolling for anchor links to handle sticky header
+    // ─── Smooth Scrolling (offset for sticky header) ─────────────
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
-            
+
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
                 e.preventDefault();
                 const headerOffset = 80;
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-  
+
                 window.scrollTo({
-                     top: offsetPosition,
-                     behavior: "smooth"
+                    top: offsetPosition,
+                    behavior: "smooth"
                 });
             }
         });
     });
+
+    // ─── Scroll Reveal Animations ────────────────────────────────
+    const revealElements = document.querySelectorAll('.about, .videos, .music');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    revealElements.forEach(el => revealObserver.observe(el));
 });
