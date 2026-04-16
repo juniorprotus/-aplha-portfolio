@@ -40,16 +40,15 @@
     gap: 0.5rem;
 }
 
-.logo-icon {
-    width: 28px;
-    height: 28px;
-    stroke: var(--color-accent-gold);
-    fill: rgba(212, 175, 55, 0.3); /* Transparent gold inner fill */
+.brand-img {
+    height: 35px; /* Fits nicely in the navbar */
+    width: auto;
+    object-fit: contain;
     transition: transform 0.3s ease;
 }
 
-.nav-logo:hover .logo-icon {
-    transform: scale(1.1) rotate(5deg);
+.nav-logo:hover .brand-img {
+    transform: scale(1.05); /* Slight zoom on hover */
 }
 
 .logo-text {
