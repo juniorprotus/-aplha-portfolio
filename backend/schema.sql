@@ -45,3 +45,29 @@ CREATE INDEX idx_songs_title ON songs (title);
 
 CREATE INDEX idx_fans_email ON fans (email);
 CREATE INDEX idx_fans_created_at_desc ON fans (created_at DESC);
+
+-- Events Table
+CREATE TABLE events (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title TEXT NOT NULL,
+    date DATE NOT NULL,
+    venue TEXT NOT NULL,
+    location TEXT NOT NULL,
+    status TEXT NOT NULL, -- 'upcoming' or 'past'
+    ticket_link TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Merch Table
+CREATE TABLE merch (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title TEXT NOT NULL,
+    price TEXT NOT NULL,
+    image_url TEXT NOT NULL,
+    status TEXT NOT NULL, -- 'pre-order' or 'coming-soon'
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Additional Indexes
+CREATE INDEX idx_events_date_desc ON events (date DESC);
+CREATE INDEX idx_merch_created_at_desc ON merch (created_at DESC);

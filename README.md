@@ -25,18 +25,21 @@ The platform serves as a central hub for fans to discover music, watch latest re
 </p>
 
 ## 🌐 Live Demo
-You can host this platform for free using **GitHub Pages**:
-1. Go to your repository **Settings**.
-2. Click on **Pages** in the left sidebar.
-3. Under **Branch**, select `main` and the `/ (root)` (or `/frontend` if you move files to root) folder.
-4. Click **Save**. Your site will be live at `https://juniorprotus.github.io/-aplha-portfolio/`
+You can host this platform for free using **Vercel**:
+1. Go to **Vercel Dashboard** and click **New Project**.
+2. Select this repository from your GitHub.
+3. **Important**: In the Vercel Settings, add these **Environment Variables**:
+   - `SUPABASE_URL`: Your Supabase Project URL.
+   - `SUPABASE_KEY`: Your Supabase Anon/Public Key.
+4. Click **Deploy**. Your site will be live!
 
-## 📁 Key Features
+## 📂 Key Features
 - 🎹 **Persistent Audio Player**: Listen to tracks while browsing.
 - 📉 **Audio Visualizer**: Dynamic animated bars in the hero section.
 - 🎥 **Embedded YouTube content**: Integrated latest music videos.
 - 📱 **Responsive Design**: Optimized for mobile and desktop.
 - 🔗 **Social Media Integration**: Direct links to all major streaming platforms.
+- ⚡ **Database Driven**: All content is now fetched live from the Supabase API once deployed.
 
 ## 📄 License
 This project is for educational and promotional purposes.

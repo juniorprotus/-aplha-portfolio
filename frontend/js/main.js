@@ -11,21 +11,43 @@ import { songs } from '../data/songs.js';
 import { events } from '../data/events.js';
 import { merch } from '../data/merch.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // ─── Initialize Components ───────────────────────────────────
-    const videoGrid = new VideoGrid('video-grid-container', videos);
+document.addEventListener('DOMContentLoaded', async () => {
+    // ─── Data Fetching Helper ───
+    async function fetchData(endpoint, fallbackData) {
+        try {
+            const response = await fetch(endpoint);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.warn(`Failed to fetch from ${endpoint}, using static fallback.`, error);
+            return fallbackData;
+        }
+    }
+
+    // ─── Fetch All Data ───
+    const liveVideos = await fetchData('/api/videos', videos);
+    const liveSongs = await fetchData('/api/songs', songs);
+    const liveEvents = await fetchData('/api/events', events);
+    const liveMerch = await fetchData('/api/merch', merch);
+
+    // ─── Initialize Components with Live Data ───
+    // Map backend thumbnail_url to thumbnail if needed
+    const mappedVideos = liveVideos.map(v => ({ ...v, thumbnail: v.thumbnail_url || v.thumbnail }));
+    const mappedSongs = liveSongs.map(s => ({ ...s, thumbnail: s.thumbnail_url || s.thumbnail }));
+
+    const videoGrid = new VideoGrid('video-grid-container', mappedVideos);
     videoGrid.render();
 
-    const musicSection = new MusicSection('music-section-container', songs);
+    const musicSection = new MusicSection('music-section-container', mappedSongs);
     musicSection.render();
 
-    const globalPlayer = new GlobalPlayer(songs);
+    const globalPlayer = new GlobalPlayer(mappedSongs);
 
     // ─── Render Tour Section ───
     const tourContainer = document.getElementById('tour-grid-container');
     if (tourContainer) {
-        if (events.length > 0) {
-            tourContainer.innerHTML = events.map(e => `
+        if (liveEvents.length > 0) {
+            tourContainer.innerHTML = liveEvents.map(e => `
                 <div class="tour-card" data-status="${e.status}">
                     <div class="tour-info">
                         <div class="tour-date">${new Date(e.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
@@ -51,11 +73,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Render Merch Section ───
     const merchContainer = document.getElementById('merch-grid-container');
     if (merchContainer) {
-        merchContainer.innerHTML = merch.map(m => `
+        merchContainer.innerHTML = liveMerch.map(m => `
             <div class="merch-card">
                 <div class="merch-badge">${m.status.replace('-', ' ').toUpperCase()}</div>
                 <div class="merch-img-container">
-                    <img src="${m.imageUrl}" alt="${m.title}" loading="lazy">
+                    <img src="${m.image_url || m.imageUrl}" alt="${m.title}" loading="lazy">
                 </div>
                 <div class="merch-details">
                     <h3 class="merch-title">${m.title}</h3>
@@ -66,26 +88,41 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
     }
 
-    // ─── VIP Newsletter Form Submission ─────────────────────────────────
+    // ─── VIP Newsletter Form Submission (Real implementation ready) ───────────
     const vipForm = document.getElementById('vip-form');
     if (vipForm) {
-        vipForm.addEventListener('submit', (e) => {
+        vipForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const input = vipForm.querySelector('input');
+            const btn = vipForm.querySelector('button');
+            
             if (input && input.value) {
-                // Mock Backend POST /api/fans logic here locally
-                console.log('Subscribing email:', input.value);
-                const btn = vipForm.querySelector('button');
                 const originalText = btn.textContent;
-                btn.textContent = 'Subscribed!';
-                btn.style.backgroundColor = 'var(--color-accent-gold)';
-                btn.style.color = 'var(--color-bg)';
-                input.value = '';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.backgroundColor = '';
-                    btn.style.color = '';
-                }, 3000);
+                btn.textContent = 'Joining...';
+                btn.disabled = true;
+
+                try {
+                    const res = await fetch('/api/fans', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: 'Fan', email: input.value, message: 'VIP Newsletter Signup' })
+                    });
+
+                    if (!res.ok) throw new Error('API request failed');
+
+                    btn.textContent = 'Welcome to the Circle!';
+                    btn.style.backgroundColor = 'var(--color-accent-gold)';
+                    input.value = '';
+                } catch (err) {
+                    console.error('Signup error:', err);
+                    btn.textContent = 'Error. Try again?';
+                } finally {
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                        btn.style.backgroundColor = '';
+                    }, 4000);
+                }
             }
         });
     }
