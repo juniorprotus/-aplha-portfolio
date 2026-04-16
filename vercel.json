@@ -9,10 +9,5 @@
       "source": "/(.*)",
       "destination": "/frontend/$1"
     }
-  ],
-  "functions": {
-    "backend/server.js": {
-      "runtime": "vercel-node@latest"
-    }
-  }
+  ]
 }
