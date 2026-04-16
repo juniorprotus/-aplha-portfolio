@@ -44,6 +44,9 @@
                 <a href="#music" class="btn btn-primary">Listen Now</a>
                 <a href="#videos" class="btn btn-outline">Watch Latest</a>
             </div>
+            <div class="hero-visualizer">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
         </div>
     </section>
 
@@ -76,6 +79,18 @@
         </div>
     </section>
 
+    <!-- Tour & Events Section -->
+    <section id="tour" class="tour">
+        <div class="container">
+            <p class="section-label">Live</p>
+            <h2 class="section-title text-center">Upcoming <span class="text-gold">Events</span></h2>
+            <div id="tour-grid-container" class="tour-grid">
+                <!-- Events injected by JS -->
+                <p class="text-center text-muted">Loading tour dates...</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Videos Section -->
     <section id="videos" class="videos">
         <div class="container">
@@ -90,6 +105,18 @@
         </div>
     </section>
 
+    <!-- Merch Vault Section -->
+    <section id="merch" class="merch">
+        <div class="container">
+            <p class="section-label">Store</p>
+            <h2 class="section-title text-center">Merch <span class="text-green">Vault</span></h2>
+            <div id="merch-grid-container" class="merch-grid">
+                <!-- Merch injected by JS -->
+                <p class="text-center text-muted">Loading merch...</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Music Section -->
     <section id="music" class="music">
         <div class="container">
@@ -97,6 +124,20 @@
             <h2 class="section-title text-center">The <span class="text-gold">Music</span></h2>
             <div id="music-section-container">
                 <!-- Songs injected by MusicSection component -->
+            </div>
+        </div>
+    </section>
+
+    <!-- VIP Newsletter Section -->
+    <section id="newsletter" class="newsletter">
+        <div class="container text-center">
+            <div class="newsletter-box">
+                <h2 class="newsletter-title">Join The <span class="text-gold">Inner Circle</span></h2>
+                <p>Get exclusive unreleased tracks, merch drops, and early access to shows.</p>
+                <form id="vip-form" class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" required class="form-input">
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
             </div>
         </div>
     </section>
@@ -152,6 +193,30 @@
             </div>
         </div>
     </footer>
+
+    <!-- Sticky Global Player -->
+    <div id="global-player" class="global-player hidden">
+        <div class="player-container">
+            <div class="player-info">
+                <img id="gp-thumbnail" src="" alt="Album Art" class="gp-thumb">
+                <div class="gp-details">
+                    <h4 id="gp-title">Track Title</h4>
+                    <span id="gp-artist">Wax Kandle Alpha</span>
+                </div>
+            </div>
+            <div class="player-controls">
+                <button id="gp-prev" aria-label="Previous Track"><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
+                <button id="gp-play" class="gp-play-btn" aria-label="Play/Pause">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+                <button id="gp-next" aria-label="Next Track"><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
+            </div>
+            <div class="player-close">
+                <button id="gp-close" aria-label="Close Player">&times;</button>
+            </div>
+        </div>
+        <div id="gp-youtube-container" style="display:none;"></div>
+    </div>
 
     <script type="module" src="js/main.js"></script>
 </body>
