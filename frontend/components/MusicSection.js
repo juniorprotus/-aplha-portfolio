@@ -6,60 +6,15 @@
 
 
 export class MusicSection {
-    constructor(containerId, apiUrl = 'http://localhost:5000/api/songs') {
+    constructor(containerId, songs = []) {
         this.container = document.getElementById(containerId);
-        this.apiUrl = apiUrl;
-        this.songs = [];
+        this.songs = songs;
         this.activeFilter = 'all';
         this.currentlyPlaying = null;
         this.player = null;
         this.isApiReady = false;
-        this.isLoading = true;
         
         this.initYouTubeApi();
-    }
-
-    /**
-     * Initializes the YouTube IFrame Player API.
-     */
-    initYouTubeApi() {
-        if (window.YT && window.YT.Player) {
-            this.isApiReady = true;
-            return;
-        }
-
-        if (!document.getElementById('youtube-api-script')) {
-            const tag = document.createElement('script');
-            tag.id = 'youtube-api-script';
-            tag.src = "https://www.youtube.com/iframe_api";
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        }
-
-        window.onYouTubeIframeAPIReady = () => {
-            this.isApiReady = true;
-        };
-    }
-
-    /**
-     * Fetches songs from the API based on the active filter.
-     */
-    async fetchSongs() {
-        this.isLoading = true;
-        this.render(); // Show loading state
-
-        try {
-            const categoryParam = this.activeFilter !== 'all' ? `?category=${this.activeFilter}` : '';
-            const response = await fetch(`${this.apiUrl}${categoryParam}`);
-            if (!response.ok) throw new Error('Failed to fetch songs');
-            this.songs = await response.json();
-        } catch (error) {
-            console.error('API Error:', error);
-            this.songs = [];
-        } finally {
-            this.isLoading = false;
-            this.render();
-        }
     }
 
     /**
@@ -124,15 +79,12 @@ export class MusicSection {
 
     createSongCard(song) {
         const isCurrent = this.currentlyPlaying === song.id;
-        // In DB, youtube_url is the full URL, we need to extract ID if it's not already there
-        // But for simplicity, I'll assume youtube_url contains the ID or we use a separate field
-        // Consistent with schema: youtube_url
-        const ytId = song.youtube_url ? song.youtube_url.split('v=')[1] || song.youtube_url.split('/').pop() : '';
+        const ytId = song.youtubeId;
 
         return `
             <div class="song-card ${isCurrent ? 'is-playing' : ''}" data-song-id="${song.id}" id="song-${song.id}">
                 <div class="song-thumbnail">
-                    <img src="${song.thumbnail_url}" alt="${song.title}" loading="lazy">
+                    <img src="${song.thumbnail}" alt="${song.title}" loading="lazy">
                     <div class="song-overlay">
                         <button class="play-btn" aria-label="Play ${song.title}" data-song-id="${song.id}" data-yt-id="${ytId}">
                             ${isCurrent ? `
@@ -167,7 +119,7 @@ export class MusicSection {
                 if (!tab) return;
 
                 this.activeFilter = tab.dataset.filter;
-                this.fetchSongs(); // Re-fetch on filter change
+                this.render(); 
             });
         }
 
@@ -241,22 +193,19 @@ export class MusicSection {
         });
     }
 
+    getFilteredSongs() {
+        if (this.activeFilter === 'all') return this.songs;
+        return this.songs.filter(song => song.category === this.activeFilter);
+    }
+
     render() {
         if (!this.container) return;
 
-        if (this.isLoading) {
-            this.container.innerHTML = `
-                ${this.createFilterTabs()}
-                <div class="loading-state">
-                    <p>Fetching the vibes...</p>
-                </div>
-            `;
-            return;
-        }
+        const filtered = this.getFilteredSongs();
 
-        const songsHtml = this.songs.length > 0
-            ? this.songs.map(song => this.createSongCard(song)).join('')
-            : '<p class="no-results">No tracks found in the database.</p>';
+        const songsHtml = filtered.length > 0
+            ? filtered.map(song => this.createSongCard(song)).join('')
+            : '<p class="no-results">No tracks found in this category.</p>';
 
         this.container.innerHTML = `
             ${this.createFilterTabs()}

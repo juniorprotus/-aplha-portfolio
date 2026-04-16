@@ -5,14 +5,16 @@
 
 import { VideoGrid } from '../components/VideoGrid.js';
 import { MusicSection } from '../components/MusicSection.js';
+import { videos } from '../data/videos.js';
+import { songs } from '../data/songs.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // ─── Initialize Components ───────────────────────────────────
-    const videoGrid = new VideoGrid('video-grid-container');
-    videoGrid.fetchVideos();
+    const videoGrid = new VideoGrid('video-grid-container', videos);
+    videoGrid.render();
 
-    const musicSection = new MusicSection('music-section-container');
-    musicSection.fetchSongs();
+    const musicSection = new MusicSection('music-section-container', songs);
+    musicSection.render();
 
     // ─── Contact Form Submission ─────────────────────────────────
     const contactForm = document.querySelector('.footer-brand form') || document.getElementById('contact-form');
