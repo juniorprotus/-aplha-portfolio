@@ -6,6 +6,7 @@ const songRoutes = require('./routes/songs');
 const fanRoutes = require('./routes/fans');
 const eventRoutes = require('./routes/events');
 const merchRoutes = require('./routes/merch');
+const paymentRoutes = require('./routes/payments');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,6 +21,7 @@ app.use('/api/songs', songRoutes);
 app.use('/api/fans', fanRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/merch', merchRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Health Check
 app.get('/', (req, res) => {

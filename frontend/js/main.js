@@ -10,6 +10,7 @@ import { videos } from '../data/videos.js';
 import { songs } from '../data/songs.js';
 import { events } from '../data/events.js';
 import { merch } from '../data/merch.js';
+import { MerchStore } from '../components/MerchStore.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // ─── Data Fetching Helper ───
@@ -41,6 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const musicSection = new MusicSection('music-section-container', mappedSongs);
     musicSection.render();
 
+    const merchStore = new MerchStore('merch-grid-container', liveMerch);
+    merchStore.render();
+
     const globalPlayer = new GlobalPlayer(mappedSongs);
 
     // ─── Render Tour Section ───
@@ -70,23 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // ─── Render Merch Section ───
-    const merchContainer = document.getElementById('merch-grid-container');
-    if (merchContainer) {
-        merchContainer.innerHTML = liveMerch.map(m => `
-            <div class="merch-card">
-                <div class="merch-badge">${m.status.replace('-', ' ').toUpperCase()}</div>
-                <div class="merch-img-container">
-                    <img src="${m.image_url || m.imageUrl}" alt="${m.title}" loading="lazy">
-                </div>
-                <div class="merch-details">
-                    <h3 class="merch-title">${m.title}</h3>
-                    <div class="merch-price">${m.price}</div>
-                    <button class="btn btn-outline" style="width: 100%;">Pre-Order / View</button>
-                </div>
-            </div>
-        `).join('');
-    }
+    // Merch rendering now handled by MerchStore component
 
     // ─── VIP Newsletter Form Submission (Real implementation ready) ───────────
     const vipForm = document.getElementById('vip-form');

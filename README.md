@@ -33,6 +33,8 @@ The platform serves as a central hub for fans to discover music, watch latest re
 - 📱 **Responsive Design**: Optimized for mobile and desktop.
 - 🔗 **Social Media Integration**: Direct links to all major streaming platforms.
 - ⚡ **Database Driven**: All content is now fetched live from the Supabase API once deployed.
+- 💳 **Live Merchandise Store**: Functional merch vault integrated with **PayHero Kenya** for M-Pesa STK Push payments.
+
 
 ## 📄 License
 This project is for educational and promotional purposes.

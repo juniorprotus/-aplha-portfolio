@@ -219,6 +219,38 @@
         <div id="gp-youtube-container" style="display:none;"></div>
     </div>
 
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="close-checkout">&times;</span>
+            <div class="modal-header">
+                <h2 class="section-title">Complete <span class="text-gold">Order</span></h2>
+                <p id="checkout-item-name" class="checkout-subtitle">Alpha Signature Hoodie</p>
+            </div>
+            <form id="checkout-form" class="checkout-form">
+                <div class="form-group">
+                    <label for="fan-name">Full Name</label>
+                    <input type="text" id="fan-name" name="name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="fan-phone">M-Pesa Phone Number</label>
+                    <input type="tel" id="fan-phone" name="phone" placeholder="e.g. 0712345678" required>
+                    <small>You will receive an M-Pesa prompt on this number.</small>
+                </div>
+                <div class="form-group">
+                    <label for="fan-location">Delivery Location</label>
+                    <input type="text" id="fan-location" name="location" placeholder="e.g. Nairobi, CBD" required>
+                </div>
+                <div class="checkout-summary">
+                    <span>Total Amount:</span>
+                    <span id="checkout-total" class="text-gold">KSh 3,500</span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="pay-btn">Confirm & Pay</button>
+                <p id="payment-status" class="payment-status"></p>
+            </form>
+        </div>
+    </div>
+
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
